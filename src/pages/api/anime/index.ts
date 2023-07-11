@@ -8,16 +8,45 @@ export default async function handler(
 ) {
   switch (req.method) {
     case 'GET':
-      const animeList = await prisma.anime.findMany({
-        include: {
-          episode: {
-            where: {
-              confirmed: false, // Filter episode
+      const type = req.query.type as string;
+      let animeList: Anime[];
+      switch (type) {
+        case 'unconfirmed':
+          animeList = await prisma.anime.findMany({
+            include: {
+              episode: {
+                where: {
+                  confirmed: false, // Filter episode
+                },
+              },
+              subGroup: true, // Include related 'subGroup' data
             },
-          },
-          subGroup: true, // Include related 'subGroup' data
-        },
-      });
+          });
+          break;
+        case 'previewed':
+          animeList = await prisma.anime.findMany({
+            include: {
+              episode: {
+                where: {
+                  previewed: true, // Filter episode
+                },
+              },
+              subGroup: true, // Include related 'subGroup' data
+            },
+          });
+          break;
+        default:
+          animeList = await prisma.anime.findMany({
+            include: {
+              episode: {
+                where: {
+                  confirmed: true, // Filter episode
+                },
+              },
+              subGroup: true, // Include related 'subGroup' data
+            },
+          });
+      }
       res.status(200).json(animeList)
       break;
     case 'POST':
@@ -51,11 +80,29 @@ export default async function handler(
         },
       });
       // Download all confirmed episode with webtorrent
-      
+
 
 
       // return response
       res.status(200).json({ message: 'confirmed' });
+      break;
+    case 'DELETE':
+      // delete all episode with confirmed = false
+      await prisma.episode.deleteMany({
+        where: {
+          confirmed: false,
+        },
+      });
+      // if all episode of anime is deleted, delete anime
+      await prisma.anime.deleteMany({
+        where: {
+          episode: {
+            none: {},
+          },
+        },
+      });
+      // return response
+      res.status(200).json({ message: 'deleted' });
       break;
     default:
       res.setHeader('Allow', ['GET', 'POST']);

@@ -13,6 +13,7 @@ model Episode {
   description String
   pubDate     String?
   torrent     String
+  previewed   Boolean  @default(false)
   confirmed   Boolean  @default(false)
   downloaded  Boolean  @default(false)
   filePath    String?

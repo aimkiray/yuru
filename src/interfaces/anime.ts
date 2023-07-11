@@ -4,8 +4,13 @@ export interface Episode {
   description: string;
   pubDate: string;
   torrent: string;
+  previewed?: boolean;
   confirmed?: boolean;
   downloaded?: boolean;
+  filePath?: string;
+  name?: string;
+  nameRaw?: string;
+  nameAlias?: string;
 }
 
 export interface Anime {

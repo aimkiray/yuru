@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import axios from 'axios';
 import xml2js from "xml2js";
 import * as cheerio from 'cheerio';
+import parseTorrent, { toMagnetURI } from 'parse-torrent';
 import prisma from '../../lib/prisma';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { Anime, Episode, SubGroup } from '@/interfaces/anime';
@@ -30,12 +31,22 @@ async function fetchAnimeWithXML(url: string): Promise<Episode[]> {
     const parsedXml = await parser.parseStringPromise(xml);
     const items = parsedXml.rss.channel[0].item;
 
-    return items.map((item: any) => ({
-      link: item.link[0],
-      description: item.description[0],
-      pubDate: item.torrent[0].pubDate[0],
-      torrent: item.enclosure[0].$.url
-    }));
+    const result = await Promise.all(
+      items.map(async (item: any) => {
+        const torrent = item.enclosure[0].$.url;
+        const torrentBuffer = await axios.get(torrent, { responseType: 'arraybuffer' });
+        const parsedTorrent = await parseTorrent(torrentBuffer.data);
+        const magnetURI = toMagnetURI(parsedTorrent);
+
+        return {
+          link: item.link[0],
+          description: item.description[0],
+          pubDate: item.torrent[0].pubDate[0],
+          torrent: magnetURI
+        };
+      })
+    );
+    return result;
   } catch (error) {
     console.error(error);
   }
