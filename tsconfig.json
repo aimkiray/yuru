@@ -18,7 +18,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["vidstack/globals"],
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

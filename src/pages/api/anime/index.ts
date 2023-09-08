@@ -13,18 +13,28 @@ export default async function handler(
       switch (type) {
         case 'unconfirmed':
           animeList = await prisma.anime.findMany({
-            include: {
+            where: {
               episode: {
-                where: {
+                some: {
                   confirmed: false, // Filter episode
                 },
               },
+            },
+            include: {
+              episode: true,
               subGroup: true, // Include related 'subGroup' data
             },
           });
           break;
         case 'previewed':
           animeList = await prisma.anime.findMany({
+            where: {
+              episode: {
+                some: {
+                  previewed: true, // Filter episode
+                },
+              },
+            },
             include: {
               episode: {
                 where: {
@@ -37,12 +47,15 @@ export default async function handler(
           break;
         default:
           animeList = await prisma.anime.findMany({
-            include: {
+            where: {
               episode: {
-                where: {
+                some: {
                   confirmed: true, // Filter episode
                 },
               },
+            },
+            include: {
+              episode: true,
               subGroup: true, // Include related 'subGroup' data
             },
           });
@@ -80,11 +93,10 @@ export default async function handler(
         },
       });
       // Download all confirmed episode with webtorrent
-
-
-
+      // src/pages/api/cron.ts
+      
       // return response
-      res.status(200).json({ message: 'confirmed' });
+      res.status(200).json({ message: 'success' });
       break;
     case 'DELETE':
       // delete all episode with confirmed = false
@@ -93,6 +105,7 @@ export default async function handler(
           confirmed: false,
         },
       });
+      // TODO recheck this
       // if all episode of anime is deleted, delete anime
       await prisma.anime.deleteMany({
         where: {

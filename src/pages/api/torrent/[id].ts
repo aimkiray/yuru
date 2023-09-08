@@ -1,4 +1,4 @@
-import { client } from '@/lib/webtorrent'
+import client from '@/lib/webtorrent'
 import path from 'path'
 import { NextApiRequest, NextApiResponse } from 'next'
 import type { Torrent } from 'webtorrent'

@@ -14,6 +14,7 @@ module.exports = {
         inverse: '#ffffff',
         primary: '#000000',
         secondary: 'rgba(0,0,0,.2)',
+        tertiary: '#fc8181',
       },
     },
   },

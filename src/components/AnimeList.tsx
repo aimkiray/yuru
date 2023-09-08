@@ -76,98 +76,6 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   return sortingFns.alphanumeric(rowA, rowB, columnId)
 }
 
-const columns: ColumnDef<Anime>[] = [
-  {
-    id: 'expand',
-    accessorFn: row => row.startDate,
-    cell: ({ row }) => (
-      <div className={`${styles['table-row-custom']} inline md:inline-block md:w-1/4 xl:w-3/12 2xl:w-1/6`}>
-        {row.getCanExpand() ? (
-          <button
-            className='inline'
-            {...{
-              style: { cursor: 'pointer' },
-            }}
-          >
-            {row.getIsExpanded() ? <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline relative right-1.5 bottom-0.5' viewBox="0 0 24 24"><path fill="currentColor" d="m12 8l-6 6l1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z" /></svg> : <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline relative right-1.5 bottom-0.5' viewBox="0 0 24 24"><path fill="currentColor" d="M16.59 8.59L12 13.17L7.41 8.59L6 10l6 6l6-6l-1.41-1.41z" /></svg>}
-            <span className='relative right-1.5 text-gray-600'>({row.original.episode.length < 10 ? '0' + row.original.episode.length.toString() : row.original.episode.length.toString()})</span>
-          </button>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline' viewBox="0 0 24 24"><path fill="currentColor" d="M4 11h16v2H4z" /></svg>
-        )}
-        <div className='hidden md:inline'>
-          {row.original.startDate}
-        </div>
-      </div>
-    ),
-    footer: props => props.column.id,
-  },
-  {
-    id: 'name',
-    accessorFn: row => `${row.name} ${row.nameAlias} ${row.nameRaw}`,
-    cell: ({ row }) => (
-      <div className={`${styles['table-row-custom']} pr-4 xl:pr-12 inline md:inline-block md:w-7/12 xl:w-1/2 2xl:w-7/12`}>
-        <a target='_blank' className='hover:underline hover:underline-offset-4' href={bgmAnimeUrl + row.original.bgmId}>
-          <span>{row.original.name} / {row.original.nameAlias}</span>
-          <span className='hidden 2xl:inline'> / {row.original.nameRaw}</span>
-        </a>
-      </div>
-    ),
-    footer: props => props.column.id,
-  },
-  {
-    id: 'wrap',
-    cell: () => (
-      <div className='inline-block md:hidden w-full'>
-      </div>
-    ),
-  },
-  {
-    id: 'startDate',
-    accessorFn: row => new Date(row.startDate),
-    sortingFn: fuzzySort,
-    cell: ({ row }) => (
-      <div className='inline-block md:hidden w-2/3'>
-        {row.original.startDate}
-      </div>
-    ),
-  },
-  {
-    id: 'publishGroup',
-    accessorFn: row => row.subGroup.map(sg => sg.name).join(' '),
-    cell: ({ row }) => (
-      <div className={`${styles['table-row-custom']} pr-2 hidden xl:inline-block xl:w-1/6`}>
-        {
-          row.original.subGroup.map((sg, index) => {
-            return (
-              <div key={`sg-${sg.sourceId}`} className='inline'>
-                <a target='_blank' className='inline hover:underline hover:underline-offset-4' href={mikanPublishGroupUrl + sg.sourceId}>
-                  {sg.name}
-                </a>
-                <span>{(index !== row.original.subGroup.length - 1) ? ', ' : ' '}</span>
-              </div>
-            )
-          })
-        }
-      </div>
-    ),
-    footer: props => props.column.id,
-  },
-  {
-    id: 'sourceId',
-    accessorFn: row => row.sourceId,
-    cell: ({ row }) => (
-      <div className={`${styles['table-row-custom']} inline-block text-right w-1/3 md:w-1/6 xl:w-1/12`}>
-        <a target='_blank' className='inline-block text-right hover:underline hover:underline-offset-4' href={mikanAnimeUrl + row.original.sourceId}>
-          <span className='pr-1'>Profile</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline-block relative bottom-0.5 left-1' viewBox="0 0 24 24"><g transform="rotate(90 12 12)"><path fill="currentColor" d="M15.199 9.944a2.6 2.6 0 0 1-.79-1.55l-.403-3.083l-2.731 1.486a2.6 2.6 0 0 1-1.719.272L6.5 6.5l.57 3.056a2.6 2.6 0 0 1-.273 1.719l-1.486 2.73l3.083.403a2.6 2.6 0 0 1 1.55.79l2.138 2.258l1.336-2.807a2.6 2.6 0 0 1 1.23-1.231l2.808-1.336l-2.257-2.138Zm.025 5.564l-2.213 4.65a.6.6 0 0 1-.977.155l-3.542-3.739a.6.6 0 0 0-.358-.182l-5.106-.668a.6.6 0 0 1-.45-.882L5.04 10.32a.6.6 0 0 0 .063-.397L4.16 4.86a.6.6 0 0 1 .7-.7l5.062.943a.6.6 0 0 0 .397-.063l4.523-2.461a.6.6 0 0 1 .882.45l.668 5.105a.6.6 0 0 0 .182.358l3.739 3.542a.6.6 0 0 1-.155.977l-4.65 2.213a.6.6 0 0 0-.284.284Zm.797 1.927l1.414-1.414l4.242 4.242l-1.414 1.414l-4.242-4.242Z" /></g></svg>
-        </a>
-      </div>
-    ),
-    footer: props => props.column.id,
-  },
-]
-
 // A debounced input react component
 function DebouncedInput({
   value: initialValue,
@@ -200,13 +108,11 @@ function DebouncedInput({
 
 type TableProps<TData> = {
   data: TData[]
-  columns: ColumnDef<TData>[]
   getRowCanExpand: (row: Row<TData>) => boolean
 }
 
 function Table({
   data,
-  columns,
   getRowCanExpand,
 }: TableProps<Anime>): JSX.Element {
   const [globalFilter, setGlobalFilter] = useState('')
@@ -257,6 +163,168 @@ function Table({
     table.setSorting(sorting)
   }
 
+  async function clearAnimeCache() {
+    try {
+      const clearPreview = await axios.delete('/api/stream');
+      if (clearPreview.status !== 200) {
+        console.error('Error clearing cache', clearPreview);
+        return
+      }
+      const clearAnime = await axios.delete('/api/anime');
+      if (clearAnime.status !== 200) {
+        console.error('Error delete anime', clearAnime);
+        return
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error('Error clearing cache', error);
+    }
+  }
+
+  async function rmAnime(id: number) {
+    try {
+      const response = await axios.delete(`/api/anime/${id}`);
+      if (response.status === 200 && response.data.message === 'success') {
+        setAnimeData((prev) => {
+          // remove this anime from list
+          return prev.filter((anime) => anime.id !== id);
+        });
+      } else {
+        console.error('Error reAnime', response);
+      }
+    } catch (error) {
+      console.error('Error reAnime', error);
+    }
+  }
+
+  async function confirmAll() {
+    try {
+      // get all confirmed episode ids
+      const confirmedEpisodeIdList = animeData.reduce((acc, anime) => {
+        const confirmedEpisodes = anime.episode.filter(episode => episode.confirmed);
+        const confirmedEpisodeIds = confirmedEpisodes.map(episode => episode.id);
+        return [...acc, ...confirmedEpisodeIds];
+      }, []);
+      // post ids
+      const response = await axios.post('/api/anime', { confirmedEpisodeIdList });
+      if (response.status === 200 && response.data.message === 'success') {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error confirmAll', error);
+    }
+  }
+
+  // format date string to en-US format
+  function formatDateEN(dateString: string): string {
+    const dateObject = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+
+    return dateObject.toLocaleDateString('en-US', options);
+  }
+
+  const columns: ColumnDef<Anime>[] = [
+    {
+      id: 'expand',
+      accessorFn: row => row.startDate,
+      cell: ({ row }) => (
+        <div className={`${styles['table-row-custom']} inline md:inline-block md:w-1/4 xl:w-3/12 2xl:w-1/6`}>
+          {row.getCanExpand() ? (
+            <button
+              className='inline'
+              {...{
+                style: { cursor: 'pointer' },
+              }}
+            >
+              {row.getIsExpanded() ? <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline relative right-1.5 bottom-0.5' viewBox="0 0 24 24"><path fill="currentColor" d="m12 8l-6 6l1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z" /></svg> : <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline relative right-1.5 bottom-0.5' viewBox="0 0 24 24"><path fill="currentColor" d="M16.59 8.59L12 13.17L7.41 8.59L6 10l6 6l6-6l-1.41-1.41z" /></svg>}
+            </button>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline' viewBox="0 0 24 24"><path fill="currentColor" d="M4 11h16v2H4z" /></svg>
+          )}
+          <span className='hover:cursor-pointer relative right-1.5'>({row.original.episode.length < 10 ? '0' + row.original.episode.length.toString() : row.original.episode.length.toString()})</span>
+          <div className='hidden md:inline' onClick={(e) => e.stopPropagation()}>
+            {row.original.startDate ? (
+              <span>{row.original.startDate}</span>
+            ) : (
+              <span>{formatDateEN(row.original.episode[0].pubDate)}</span>
+            )}
+          </div>
+        </div>
+      ),
+      footer: props => props.column.id,
+    },
+    {
+      id: 'name',
+      accessorFn: row => `${row.name} ${row.nameAlias} ${row.nameRaw}`,
+      cell: ({ row }) => (
+        <div className={`${styles['table-row-custom']} pr-4 xl:pr-12 inline md:inline-block md:w-7/12 xl:w-1/2 2xl:w-7/12`}>
+          {/* <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline relative right-1.5 bottom-0.5' viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 5H9l-7 7l7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm-2 4l-6 6m0-6l6 6"/></svg> */}
+          <a onClick={(e) => e.stopPropagation()} target='_blank' className='hover:underline hover:underline-offset-4' href={bgmAnimeUrl + row.original.bgmId}>
+            <span>{row.original.name}</span>
+            {row.original.nameAlias ? (<span> / {row.original.nameAlias}</span>) : (null)}
+            {row.original.nameRaw ? (<span> / {row.original.nameRaw}</span>) : (null)}
+          </a>
+        </div>
+      ),
+      footer: props => props.column.id,
+    },
+    {
+      id: 'wrap',
+      cell: () => (
+        <div className='inline-block md:hidden w-full'>
+        </div>
+      ),
+    },
+    {
+      id: 'startDate',
+      accessorFn: row => new Date(row.startDate),
+      sortingFn: fuzzySort,
+      cell: ({ row }) => (
+        <div className={`${styles['table-row-custom']} inline-block md:hidden w-2/3`}>
+          {row.original.startDate ? (
+            <span>{row.original.startDate}</span>
+          ) : (
+            <span>{formatDateEN(row.original.episode[0].pubDate)}</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      id: 'publishGroup',
+      accessorFn: row => row.subGroup.map(sg => sg.name).join(' '),
+      cell: ({ row }) => (
+        <div className={`${styles['table-row-custom']} pr-2 hidden xl:inline-block xl:w-1/6`}>
+          {
+            row.original.subGroup.map((sg, index) => {
+              return (
+                <div key={`sg-${sg.sourceId}`} className='inline'>
+                  <a onClick={(e) => e.stopPropagation()} target='_blank' className='inline hover:underline hover:underline-offset-4' href={mikanPublishGroupUrl + sg.sourceId}>
+                    {sg.name}
+                  </a>
+                  <span>{(index !== row.original.subGroup.length - 1) ? ', ' : ' '}</span>
+                </div>
+              )
+            })
+          }
+        </div>
+      ),
+      footer: props => props.column.id,
+    },
+    {
+      id: 'sourceId',
+      accessorFn: row => row.sourceId,
+      cell: ({ row }) => (
+        <div className={`${styles['table-row-custom']} inline-block text-right w-1/3 md:w-1/6 xl:w-1/12`}>
+          <a onClick={(e) => e.stopPropagation()} target='_blank' className='inline-block text-right hover:underline hover:underline-offset-4' href={mikanAnimeUrl + row.original.sourceId}>
+            <span className='pr-1'>Profile</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className='w-6 h-6 inline-block relative bottom-0.5 left-1' viewBox="0 0 24 24"><g transform="rotate(90 12 12)"><path fill="currentColor" d="M15.199 9.944a2.6 2.6 0 0 1-.79-1.55l-.403-3.083l-2.731 1.486a2.6 2.6 0 0 1-1.719.272L6.5 6.5l.57 3.056a2.6 2.6 0 0 1-.273 1.719l-1.486 2.73l3.083.403a2.6 2.6 0 0 1 1.55.79l2.138 2.258l1.336-2.807a2.6 2.6 0 0 1 1.23-1.231l2.808-1.336l-2.257-2.138Zm.025 5.564l-2.213 4.65a.6.6 0 0 1-.977.155l-3.542-3.739a.6.6 0 0 0-.358-.182l-5.106-.668a.6.6 0 0 1-.45-.882L5.04 10.32a.6.6 0 0 0 .063-.397L4.16 4.86a.6.6 0 0 1 .7-.7l5.062.943a.6.6 0 0 0 .397-.063l4.523-2.461a.6.6 0 0 1 .882.45l.668 5.105a.6.6 0 0 0 .182.358l3.739 3.542a.6.6 0 0 1-.155.977l-4.65 2.213a.6.6 0 0 0-.284.284Zm.797 1.927l1.414-1.414l4.242 4.242l-1.414 1.414l-4.242-4.242Z" /></g></svg>
+          </a>
+        </div>
+      ),
+      footer: props => props.column.id,
+    },
+  ]
+
   const table = useReactTable<Anime>({
     data: animeData,
     columns,
@@ -284,10 +352,8 @@ function Table({
       try {
         // get filter list from db
         await getFilterList();
-        console.log(filterList)
 
         const tempData = data.map((anime) => {
-          console.log(anime)
           const { episode, ...pureAnime } = anime;
           const tempEpisode = episode.filter((episodeItem) => {
             const episodeName = episodeItem.description.toLowerCase();
@@ -319,7 +385,7 @@ function Table({
   return (
     <div className="mx-3 md:mx-6">
       <div className="w-full border-t border-primary text-base xl:text-lg font-semibold mt-16 py-2">
-        <div className='inline-block w-5/12 md:w-1/4 xl:w-3/12 2xl:w-1/6'>
+        <div className='inline-block w-5/12 md:w-1/4 2xl:w-1/6'>
           <button className='flex items-center border-0' onClick={() => setFilterFormVisible(!filterFormVisible)}>
             <span className='pr-1'>Filter and sort</span>
             <svg xmlns="http://www.w3.org/2000/svg" className='w-7 h-7' viewBox="0 0 24 24"><path fill="currentColor" d="M7 11h10v2H7zM4 7h16v2H4zm6 8h4v2h-4z" /></svg>
@@ -332,7 +398,7 @@ function Table({
           </button>
         </div>
         <div className='inline-block w-5/12 md:w-5/12 xl:w-1/4 text-right'>
-          <button className='border-0'>Confirm and download</button>
+          <button onClick={() => confirmAll()} className='border-0'>Confirm and download</button>
         </div>
       </div>
 
@@ -399,7 +465,11 @@ function Table({
               </li>
               {row.getIsExpanded() && (
                 <li>
-                  <div>
+                  <div className='mb-3'>
+                    <span className={`${styles['font-mono']} mt-3 text-sm text-gray-500 hover:cursor-pointer`} onClick={(e) => {
+                      e.stopPropagation();
+                      rmAnime(row.original.id);
+                    }}>$rm -f *</span>
                     <EpisodeList
                       episode={row.original.episode}
                       onUpdate={(updatedEpisodeList: Episode[]) =>
@@ -416,7 +486,9 @@ function Table({
       <div className="w-full border-t border-primary text-base md:text-lg font-semibold mt-16 py-2">
         <div className='inline-block w-5/12 md:w-1/4 xl:w-1/6'>1 - {table.getRowModel().rows.length} of {table.getRowModel().rows.length}</div>
         <div className='inline-block w-1/6 md:w-1/3 xl:w-7/12'></div>
-        <div className='inline-block w-5/12 md:w-5/12 xl:w-1/4 text-right'>Clear</div>
+        <div className='inline-block w-5/12 md:w-5/12 xl:w-1/4 text-right'>
+          <button onClick={() => clearAnimeCache()}>Clear</button>
+        </div>
       </div>
     </div>
   )
@@ -426,7 +498,6 @@ const AnimeList: React.FC<{ animeList: Anime[] }> = ({ animeList }) => {
   return (
     <Table
       data={animeList}
-      columns={columns}
       getRowCanExpand={() => true}
     />
   )

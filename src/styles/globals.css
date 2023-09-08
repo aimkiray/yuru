@@ -2,3 +2,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  font-family: "Lexend", system-ui, -apple-system, Helvetica Neue, Arial, sans-serif;
+}
+
+/* @font-face {
+  font-family: 'Jost';
+  src: url('/fonts/Jost.ttf');
+  font-feature-settings: "ss01" 1;
+} */
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('/fonts/Lexend.ttf');
+}

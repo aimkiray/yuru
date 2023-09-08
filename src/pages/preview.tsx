@@ -46,15 +46,11 @@ export default function Preview() {
   }
 
   async function getBufferProgress() {
-    console.log(2)
     if (!streamSrc) return;
-    console.log(streamSrc.split('/').pop())
     const result = await axios.get('/api/torrent/' + streamSrc.split('/').pop());
     if (result.status !== 200) return;
     // maybe torrent is not ready
     if (result.data.message === 'failed') return;
-    console.log(result.data)
-    console.log(result.data.progress)
     setProgress(result.data.torrentStatus.progress);
   }
 
@@ -79,7 +75,7 @@ export default function Preview() {
         {/* <video src={streamSrc} controls width="100%" height="100%" className="h-[80vh]"></video> */}
         {/* <VideoPlayer src={streamSrc}></VideoPlayer> */}
         <PlyrVideo streamSrc={streamSrc}></PlyrVideo>
-        <div>buffer progress: {progress}</div>
+        {progress === 0 ? ( <div>Loading...</div> ) : ( <div>buffer progress: {progress}</div> )}
       </div>
       <div className='block lg:inline-block lg:w-1/3 lg:align-top'>
         <div className='font-semibold text-black'>Preview list</div>
@@ -103,4 +99,5 @@ export default function Preview() {
   )
 }
 
+// Video player, do not re-render if streamSrc is not changed
 const PlyrVideo = React.memo(({ streamSrc }: { streamSrc: string }) => <Plyr {...{source: {type: 'video', sources: [{src: streamSrc}]}}}/>);

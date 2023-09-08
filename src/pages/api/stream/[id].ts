@@ -1,4 +1,4 @@
-import { client } from '@/lib/webtorrent'
+import client from '@/lib/webtorrent'
 import path from 'path'
 import { NextApiRequest, NextApiResponse } from 'next'
 import type { Torrent } from 'webtorrent'
@@ -39,7 +39,8 @@ export default async function handler(
     select: {
       name: true,
       torrent: true,
-      anime: true
+      infoHash: true,
+      // anime: true
     }
   })
   const torrentId = torrentQuery.torrent
@@ -64,6 +65,16 @@ export default async function handler(
   if (!newTorrent) {
     return res.status(400).json({ error: 'Error adding torrent' })
   }
+
+  // update infoHash
+  await prisma.episode.update({
+    where: {
+      id: episodeId
+    },
+    data: {
+      infoHash: newTorrent.infoHash
+    }
+  })
 
   const torrentIsReady = await waitForTorrent(newTorrent);
 

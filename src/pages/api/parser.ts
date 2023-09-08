@@ -259,9 +259,11 @@ export default async function handler(
     for (let animeData of animeCollection) {
       const { subGroup, episode, ...pureAnime } = animeData;
 
-      const existingAnime = await prisma.anime.findUnique({
+      // Check for duplication.
+      const existingAnime = await prisma.anime.findFirst({
         where: {
           sourceId: pureAnime.sourceId,
+          publishGroupId: pureAnime.publishGroupId,
         },
       });
 
@@ -287,12 +289,15 @@ export default async function handler(
       }
     }
     const animeWithId = await prisma.anime.findMany({
-      include: {
+      where: {
         episode: {
-          where: {
+          some: {
             confirmed: false, // Filter episode
           },
         },
+      },
+      include: {
+        episode: true, // Include related 'episode' data
         subGroup: true, // Include related 'subGroup' data
       },
     });

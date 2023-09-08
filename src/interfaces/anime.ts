@@ -4,6 +4,7 @@ export interface Episode {
   description: string;
   pubDate: string;
   torrent: string;
+  infoHash?: string;
   previewed?: boolean;
   confirmed?: boolean;
   downloaded?: boolean;

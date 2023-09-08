@@ -13,6 +13,7 @@ model Episode {
   description String
   pubDate     String?
   torrent     String
+  infoHash    String?
   previewed   Boolean  @default(false)
   confirmed   Boolean  @default(false)
   downloaded  Boolean  @default(false)
@@ -37,7 +38,7 @@ model SubGroup {
 model Anime {
   id               Int        @id @default(autoincrement())
   sourceSite       String
-  sourceId         String     @unique
+  sourceId         String
   name             String
   nameRaw          String?
   nameAlias        String?
